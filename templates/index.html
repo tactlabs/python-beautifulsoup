@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Details</title>
+    <style>
+        .arrow {
+            display: none;
+        }
+        .asc .asc-arrow {
+            display: inline;
+        }
+        .desc .desc-arrow {
+            display: inline;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            sortTable(4, 'desc'); // Automatically sort by the "margin" column
+        });
+
+        function sortTable(columnIndex, initialDir = 'asc') {
+            var table, headers, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("myTable");
+            headers = table.getElementsByTagName("TH");
+            switching = true;
+            dir = initialDir; // Use initial direction from argument or default to 'asc'
+
+            // Clear previous arrows
+            for (i = 0; i < headers.length; i++) {
+                headers[i].className = headers[i].className.replace(" asc", "").replace(" desc", "");
+            }
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+            if (dir === "asc") {
+                headers[columnIndex].className += " asc";
+            } else {
+                headers[columnIndex].className += " desc";
+            }
+        }
+    </script>
+</head>
+<body>
+    <table border="1" id="myTable">
+        <tr>
+            <th onclick="sortTable(0)">ID <span class="arrow asc-arrow">&#9650;</span><span class="arrow desc-arrow">&#9660;</span></th>
+            <th onclick="sortTable(1)">Constituency <span class="arrow asc-arrow">&#9650;</span><span class="arrow desc-arrow">&#9660;</span></th>
+            <th onclick="sortTable(2)">Leading <span class="arrow asc-arrow">&#9650;</span><span class="arrow desc-arrow">&#9660;</span></th>
+            <th onclick="sortTable(3)">Votes <span class="arrow asc-arrow">&#9650;</span><span class="arrow desc-arrow">&#9660;</span></th>
+            <th onclick="sortTable(4)">Margin <span class="arrow asc-arrow">&#9650;</span><span class="arrow desc-arrow">&#9660;</span></th>
+        </tr>
+
+        {% for row in rows %}
+        <tr>
+            <td>{{ row['id'] }}</td>
+            <td>{{ row['constituency'] }}</td>
+            <td>{{ row['leading'] }}</td>
+            <td>{{ row['votes'] }}</td>
+            <td>{{ row['margin'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
