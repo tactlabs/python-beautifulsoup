@@ -32,3 +32,11 @@ for row in soup.select("section div ol li"):
     link_href = link['href']
     print(f'Text: {link_text}, Href: {link_href}')
 
+for row in soup.select("section div ol li div "):
+
+    price= row.select("p ")
+
+    link1_text=price.get_text()
+    #link1_href = img['href']
+    print(f'text: {price}')
+      
