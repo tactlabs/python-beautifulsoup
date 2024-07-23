@@ -1,17 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# the above line is to avoid 'SyntaxError: Non-UTF-8 code starting with' error
-#from sympy.polys.polytools import quo
 
 '''
 Created on Aug 21, 2018
 
-Course work: 
+Course work:
 
-@author: 
+@author:
 
 Source:
-    
+
 '''
 
 from bs4 import BeautifulSoup
@@ -26,19 +22,19 @@ soup = BeautifulSoup(response.text, "html.parser")
 listings = []
 for rows in soup.find_all("tr"):
     if ("oddrow" in rows["class"]) or ("evenrow" in rows["class"]):
-        
+
         name = rows.find("div", class_="name").a.get_text()
-        
+
         hometown = rows.find_all("td")[1].get_text()
-        
+
         school = hometown[hometown.find(",")+4:]
-        
+
         city = hometown[:hometown.find(",")+4]
-        
+
         position = rows.find_all("td")[2].get_text()
-        
+
         grade = rows.find_all("td")[4].get_text()
-        
+
         listings.append([name, school, city, position, grade])
 
 print(listings)
