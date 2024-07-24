@@ -2,10 +2,11 @@ from bs4 import BeautifulSoup
 import requests
 import os, os.path
 import json
+import sys
 
-
-url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-response = requests.get(url)
+handle = sys.argv[1]
+#url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+response = requests.get(handle)
 soup = BeautifulSoup(response.text, "html.parser")
 
 # print(soup)
@@ -52,7 +53,7 @@ def get_price():
 def get_stock():
     stock_list = []
     for row in soup.select("div.product_main p.instock.availability"):
-        stock=row.get_text()
+        stock=row.get_text(strip=True)
         stock_list.append(stock)
     return stock_list
 
@@ -60,8 +61,14 @@ def get_stock():
 def get_star():
     star_list = []
     for row in soup.select("div.product_main p.star-rating.Three"):
-        star = row.get_text()
-        star_list.append(star)
+        star = row['class']
+        star_rating=None
+        for cls in star:
+            if cls != 'star-rating':
+              star_rating = cls
+              break
+        if star_rating:
+           star_list.append(star_rating)
     return star_list
 
 
@@ -87,6 +94,14 @@ def startpy():
 
     # book_list = get_book_details()
     # print(f'book_list:{book_list}')
+
+    if len(sys.argv) != 2:
+        print("Please enter handle (like below)")
+        print("python github_turtle_score.py jerinuser")
+        return
+
+    handle = sys.argv[1]
+
     
     title = get_title()
     print(f'title:{title}')
@@ -102,7 +117,7 @@ def startpy():
     print(f'stock_list:{stock_list}')
 
     star_list = get_star()
-    print(f'star_list:{star_list}')
+    print(f'star_rating:{star_list}')
     # final_list = []
     # for idx, book in enumerate(book_list):
     #     final_list.append({
@@ -115,7 +130,8 @@ def startpy():
     # print(final_list)
 
     # print(json.dumps(final_list, indent=4))
-
+    # handle = sys.argv[1]
+    
 
 if __name__ == '__main__':
     startpy()
