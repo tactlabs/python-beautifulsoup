@@ -3,6 +3,7 @@ import requests
 import os, os.path
 import json
 import sys
+import re
 
 #url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 # response = requests.get(handle)
@@ -53,7 +54,12 @@ def get_stock(soup):
     stock_list = []
     for row in soup.select("div.product_main p.instock.availability"):
         stock=row.get_text(strip=True)
-        stock_list.append(stock)
+        match=re.search(r'\b\d+\b',stock)
+        if match:
+            stock_number=int(match.group())
+            modified_stock_number=stock_number + 10
+            #modified_stock =re.sub(r'\b\d+\b',str(modified_stock_number),stock)
+            stock_list.append(modified_stock_number)
     return stock_list
 
 
@@ -100,7 +106,7 @@ def startpy():
 
     if len(sys.argv) != 2:
         print("Please enter handle (like below)")
-        print("python github_turtle_score.py jerinuser")
+        print("python github_turtle_score.py url")
         return
 
 
