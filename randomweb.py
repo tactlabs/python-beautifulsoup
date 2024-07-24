@@ -4,14 +4,13 @@ import os, os.path
 import json
 import sys
 
-handle = sys.argv[1]
 #url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-response = requests.get(handle)
-soup = BeautifulSoup(response.text, "html.parser")
+# response = requests.get(handle)
+# soup = BeautifulSoup(response.text, "html.parser")
 
 # print(soup)
 
-def get_book_details():
+def get_book_details(soup):
 
     book_list = []
     for row in soup.select("div.product_main h1"):
@@ -31,7 +30,7 @@ def get_book_details():
 
     return book_list
 
-def get_title():
+def get_title(soup):
 
     title_list = []
     for row in soup.select("div.product_main h1"):
@@ -42,7 +41,7 @@ def get_title():
 
     return title_list
 
-def get_price():
+def get_price(soup):
     price_list = []
     for row in soup.select("div.product_main p.price_color"):
         price = row.get_text()
@@ -50,7 +49,7 @@ def get_price():
         price_list.append(price)
     return price_list
 
-def get_stock():
+def get_stock(soup):
     stock_list = []
     for row in soup.select("div.product_main p.instock.availability"):
         stock=row.get_text(strip=True)
@@ -58,7 +57,7 @@ def get_stock():
     return stock_list
 
 
-def get_star():
+def get_star(soup):
     star_list = []
     for row in soup.select("div.product_main p.star-rating.Three"):
         star = row['class']
@@ -72,7 +71,7 @@ def get_star():
     return star_list
 
 
-def get_description():
+def get_description(soup):
     description_list=[]
     for row in soup.select("div.product_main div"):
         description = row.get_text()
@@ -94,29 +93,32 @@ def startpy():
 
     # book_list = get_book_details()
     # print(f'book_list:{book_list}')
+    handle = sys.argv[1]
+    response = requests.get(handle)
+    soup = BeautifulSoup(response.text, "html.parser")
+    
 
     if len(sys.argv) != 2:
         print("Please enter handle (like below)")
         print("python github_turtle_score.py jerinuser")
         return
 
-    handle = sys.argv[1]
 
     
-    title = get_title()
+    title = get_title(soup)
     print(f'title:{title}')
 
-    price_list = get_price()
+    price_list = get_price(soup)
     print(f'price_list:{price_list}')
 
 
-    description_list=get_description()
+    description_list=get_description(soup)
     print(f'description_list:{description_list}')
 
-    stock_list = get_stock()
+    stock_list = get_stock(soup)
     print(f'stock_list:{stock_list}')
 
-    star_list = get_star()
+    star_list = get_star(soup)
     print(f'star_rating:{star_list}')
     # final_list = []
     # for idx, book in enumerate(book_list):
