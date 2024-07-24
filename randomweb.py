@@ -58,7 +58,6 @@ def get_stock(soup):
         if match:
             stock_number=int(match.group())
             modified_stock_number=stock_number + 10
-            #modified_stock =re.sub(r'\b\d+\b',str(modified_stock_number),stock)
             stock_list.append(modified_stock_number)
     return stock_list
 
